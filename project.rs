@@ -10,13 +10,15 @@ fn port_scanning(tx: Sender<u16>, ip: &str, port: u16) {
     if TcpStream::connect(&addr).is_ok() {
         tx.send(port).unwrap();  }
 }
+
+
 fn main() {
     print!("[-] Input Target Host: ");
     io::stdout().flush().unwrap();
     let mut target_ip = String::new();
     io::stdin().read_line(&mut target_ip).unwrap();
     let target_ip = target_ip.trim();
-    let port_range = 1..=65535;
+    let port_range = 1..=65535;     // can be adjusted for any range, but it takes longer for higher ports
     let thread_limit = 100;
     let (tx, rx) = channel();
     let mut handles = Vec::new();
@@ -32,7 +34,10 @@ fn main() {
             for handle in handles.drain(..) {
                 handle.join().unwrap();
             }
-        } }
+        } 
+    }
+
+     
     for handle in handles {
         handle.join().unwrap(); }
     drop(tx);
